@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  web:
+    image: webdevops/php-apache:alpine-php7 #Imagem de um site que linkou o alpine (Linux) com o php+apache
+    ports:
+      - "4500:80" #Host = 4500
+    volumes:
+      - /data/php/:/app #Diretório onde a aplicação está inserida
+
+    networks:
+      - minha-rede #Mesma rede p/ todos os containers
+
+  db: #Nome do serviço
+    image: mysql:5.7 #Imagem oficial com tag: 5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "Senha123"
+      MYSQL_DATABASE: "testedb" #Padrão p/ pegar infos do SQL
+    ports:
+      - "3306:3306" #Porta padrão do SQL
+    volumes:
+      - /data/mysql-C:/var/lib/mysql 	#Tabela com dados que será reaproveitada
+
+    networks:
+      - minha-rede 
+
+  phpmyadmin: $Ferramenta de gereciamento p/ o BdD
+    image: phpmyadmin/phpmyadmin
+    environment:
+      MYSQL_ROOT_PASSWORD: "Senha123"
+    ports:
+      - "8080:80"
+    volumes:
+      - /data/php/admin/uploads.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini	#Liberando as configs p uploads
+
+    networks:
+      - minha-rede
+
+networks:
+   minha-rede:
+     driver: bridge
